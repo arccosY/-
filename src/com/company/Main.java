@@ -1,240 +1,197 @@
 package com.company;
 
-
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import javax.swing.JFrame;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-
-
-//import java.awt.*;
-//import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.Scanner;
 
 
 public class Main extends JFrame {
 
-    private static List<String> readUsingScanner(String fileName) throws IOException {
-        return Files.readAllLines(Paths.get(fileName));
-//        Scanner scanner = new Scanner(, StandardCharsets.UTF_8.name());
-//        здесь мы можем использовать разделитель, например: "\\A", "\\Z" или "\\z"
-//        String data = scanner.useDelimiter("\\A").next();
-//        scanner.close();
-//        return data;
-
-    }
     static final int w = 1920;
     static final int h = 1080;
 
-    public static void draw(Graphics2D g) throws IOException {
-        String fileName= "C:/Users/Тим/Downloads/uaz_1.txt";
+    static final int X = 1000;
+    static final int Y = 700;
+
+    static final double a = 60 * (Math.PI / 180);
+    static final double b = 120 * (Math.PI / 180);
+    static final double c = 180 * (Math.PI / 180);
+
+
+    static double[][] vertex = new double[1000][3];
+    static double[][] normals = new double[1000][3];
+    static double[][] texture_coordinates = new double[1000][2];
+    static int[][][] triangles = new int[1000][3][3];
+
+//    static final int k = 64;
+
+    public static void draw(Graphics2D g) throws FileNotFoundException {
         BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-
-//        String s="0";
-//        s= readUsingScanner(fileName);
-        int k=0;
-        double u[][] = new double[1000][3];
-        double vn[][] = new double[1000][3];
-        double vt[][] = new double[1000][3];
-        double f[][]= new double[1000][3];
-        int ff[]=new int [3];
-
-        int kk=0;
-        for(String l : readUsingScanner(fileName)){
-            k++;
-            l.split(" ");
-
-            if(l.length()!=0) {
-                if (l.charAt(0) == 'v' && l.charAt(1)==' ') {
-                    kk=kk+1;
-                    String s="";
-                    int qq=0;
-                    for(int i=2;i<l.length();i++)
-                    {
-                        if(l.charAt(i)!=' ')
-                        {
-                            s=s+l.charAt(i);
-                        }
-                        else
-                        {
-                            u[kk][qq]=Double.parseDouble(s);
-                            s="";
-                            qq=qq+1;
-                        }
-                    }
-                    u[kk][qq]=Double.parseDouble(s);
-                    s="";
-                    qq=qq+1;
-                }
-
-                if (l.charAt(0) == 'v' && l.charAt(1)=='t') {
-                    kk=0;
-                    String s="";
-                    int qq=0;
-                    for(int i=3;i<l.length();i++)
-                    {
-                        if(l.charAt(i)!=' ')
-                        {
-                            s=s+l.charAt(i);
-                        }
-                        else
-                        {
-                            vt[i][qq]=Double.parseDouble(s);
-                            s="";
-
-                            qq=qq+1;
-                        }
-                    }
-
-                }
-                if (l.charAt(0) == 'v' && l.charAt(1)=='n') {
-
-                    String s="";
-                    int qq=0;
-                    for(int i=3;i<l.length();i++)
-                    {
-                        if(l.charAt(i)!=' ')
-                        {
-                            s=s+l.charAt(i);
-                        }
-                        else
-                        {
-                            vn[i][qq]=Double.parseDouble(s);
-                            s="";
-
-                            qq=qq+1;
-                        }
-                    }
-
-                }
-                if (l.charAt(0) == 'f' && l.charAt(1)==' ') {
-                    kk=kk+1;
-                    String s="";
-                    int qq=0;
-                    int ss=0;
-                    for(int i=2;i<l.length();i++)
-                    {
-
-                        if(l.charAt(i)!=' ' && l.charAt(i)!='/')
-                        {
-                            s=s+l.charAt(i);
-                        }
-                        if(l.charAt(i)=='/')
-                        {
-                            if(qq==0) {
-                                ff[ss] = Integer.parseInt(s);
-                            }
-                            qq=qq+1;
-                        }
-                        if(l.charAt(i)==' ') {
-                            ss = ss + 1;
-                            s="";
-                            qq=0;
-                        }
-                    }
-                    int hh=ff[0];
-                    double x1=vt[hh][0]+300;
-                    double y1=vt[hh][1]+300;
-                    double x4=u[hh][0]+300;
-                    double y4=u[hh][1]+300;
-                    hh=ff[1];
-                    double x2=vt[hh][0]+300;
-                    double y2=vt[hh][1]+300;
-                    double x5=u[hh][0]+300;
-                    double y5=u[hh][1]+300;
-                    hh=ff[2];
-                    double x3=vt[hh][0]+300;
-                    double y3=vt[hh][1]+300;
-                    double x6=u[hh][0]+300;
-                    double y6=u[hh][1]+300;
-
-                    RenderObj.renderTriangle(img, x4, y4, x5, y5, x6,y6,x1,y1,x2,y2,x3,y3);
-                }
-            }
-        }
-
-
-        //  Render.renderTriangle(img, 1366, 500, 500, 300, 400,400);
-
-
-        /*if (l.charAt(0) == 'v' && l.charAt(1) == 't') {
-                    kk = 0;
-                    String s = "";
-                    int qq = 0;
-                    for (int i = 3; i < l.length(); i++) {
-                        if (l.charAt(i) != ' ') {
-                            s = s + l.charAt(i);
-                        } else {
-                            vt[i][qq] = Double.parseDouble(s);
-                            s = "";
-
-                            qq = qq + 1;
-                        }
-                    }
-
-                }
-                if (l.charAt(0) == 'v' && l.charAt(1) == 'n') {
-
-                    String s = "";
-                    int qq = 0;
-                    for (int i = 3; i < l.length(); i++) {
-                        if (l.charAt(i) != ' ') {
-                            s = s + l.charAt(i);
-                        } else {
-                            vn[i][qq] = Double.parseDouble(s);
-                            s = "";
-
-                            qq = qq + 1;
-                        }
-                    }
-
-                }*/
-        /*System.out.println("=========================");
-        if (ss == 1) {
-            int hh = Integer.parseInt(s);
-            s = "";
-
-            xn[qq] = vn[hh][0] ;
-            yn[qq] = vn[hh][1] ;
-            zn[qq]= vn[hh][2] ;
-        }
-        if (ss == 2) {
-            int hh = Integer.parseInt(s);
-            s = "";
-
-        }*/
-
-        //  Render.renderTriangle(img, 1366, 500, 500, 300, 400,400);
-
-
-
-        //Создаем буффер в который рисуем кадр.
-
-
-        //Рисуем кадр.
-
-
+//        int X = 1000;
+//        int Y = 500;
+//        double x = 0;
+//        double y = 200;
+//        double a = 2*Math.PI/k;
+//        for (int i = 0; i < k; i++) {
+//            Render.renderLine(img, X, Y, (int) (X + x), (int) (Y + y), Color.BLACK);
+//            double x_ = x*Math.cos(a) + y*Math.sin(a);
+//            double y_ = -x*Math.sin(a) + y*Math.cos(a);
+//            x = x_;
+//            y = y_;
+//            g.drawImage(img, 0,0, null);
+//        }
+        //Render.renderTriangle(img, 100, 100, 479, 524, 275, 542, Color.BLACK);
+        readOBJ();
+//        Matrix M = new Matrix(new double[][]{{11, 3, 52}, {3, 9, 7}, {-21, 8, 15}}).mult(new Matrix(new double[][]{{-4, 16, 93}, {5, 76, -10}, {36, -7, 9}}));
+//        PrintMatrix(M);
+        OBJrotate();
+        renderOBJ(g, img);
         g.drawImage(img, 0, 0, null);
     }
 
+    static void PrintMatrix(Matrix M) {
+        for (int i = 0; i < M.m; i++) {
+            for (int j = 0; j < M.n; j++) {
+                System.out.print(M.get(i, j) + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+    }
+
+    static void BuildArrays() throws FileNotFoundException {
+        String path = "C:/Users/Тим/Downloads/uaz_1.txt"; //путь к файлу
+        Scanner s = new Scanner(new File(path));
+        int vertex_index = 0;
+        int normals_index = 0;
+        int texture_coordinates_index = 0;
+        int triangles_index = 0;
+        while (s.hasNextLine()) {
+            String Line = s.nextLine();
+            String[] arr = Line.split(" ");
+            if (arr.length == 0) continue;
+            String type = arr[0];
+            if (type.equals("v")) {
+                vertex[vertex_index][0] = Double.parseDouble(arr[1]);
+                vertex[vertex_index][1] = Double.parseDouble(arr[2]);
+                vertex[vertex_index][2] = Double.parseDouble(arr[3]);
+                vertex_index++;
+            } else if (type.equals("vt")) {
+                texture_coordinates[texture_coordinates_index][0] = Double.parseDouble(arr[1]);
+                texture_coordinates[texture_coordinates_index][1] = Double.parseDouble(arr[2]);
+                texture_coordinates_index++;
+            } else if (type.equals("vn")) {
+                normals[normals_index][0] = Double.parseDouble(arr[1]);
+                normals[normals_index][1] = Double.parseDouble(arr[2]);
+                normals[normals_index][2] = Double.parseDouble(arr[3]);
+                normals_index++;
+            } else if (type.equals("f")) {
+                String[] vertex1_indices = arr[1].split("/");
+                String[] vertex2_indices = arr[2].split("/");
+                String[] vertex3_indices = arr[3].split("/");
+                triangles[triangles_index][0][0] = Integer.parseInt(vertex1_indices[0]);
+                triangles[triangles_index][0][1] = Integer.parseInt(vertex1_indices[1]);
+                triangles[triangles_index][0][2] = Integer.parseInt(vertex1_indices[2]);
+                triangles[triangles_index][1][0] = Integer.parseInt(vertex2_indices[0]);
+                triangles[triangles_index][1][1] = Integer.parseInt(vertex2_indices[1]);
+                triangles[triangles_index][1][2] = Integer.parseInt(vertex2_indices[2]);
+                triangles[triangles_index][2][0] = Integer.parseInt(vertex3_indices[0]);
+                triangles[triangles_index][2][1] = Integer.parseInt(vertex3_indices[1]);
+                triangles[triangles_index][2][2] = Integer.parseInt(vertex3_indices[2]);
+                triangles_index++;
+            }
+        }
+        vertex = Arrays.copyOf(vertex, vertex_index);
+        normals = Arrays.copyOf(normals, normals_index);
+        texture_coordinates = Arrays.copyOf(texture_coordinates, texture_coordinates_index);
+        triangles = Arrays.copyOf(triangles, triangles_index);
+    }
+
+    static void OBJrotate() {
+        Matrix Mx = new Matrix(new double[][]
+                {{1, 0, 0},
+                        {0, Math.cos(a), -Math.sin(a)},
+                        {0, Math.sin(a), Math.cos(a)}});
+        Matrix My = new Matrix(new double[][]
+                {{Math.cos(b), 0, Math.sin(b)},
+                        {0, 1, 0},
+                        {-Math.sin(b), 0, Math.cos(b)}});
+        Matrix Mz = new Matrix(new double[][]
+                {{Math.cos(c), -Math.sin(c), 0},
+                        {Math.sin(c), Math.cos(c), 0},
+                        {0, 0, 1}});
+        Matrix M = Mx.mult(My).mult(Mz);
+        for (int i = 0; i < vertex.length; i++) {
+            Vector V = new Vector(new double[]{vertex[i][0], vertex[i][1], vertex[i][2]});
+            Matrix Mv = V.toMatrix();
+            Matrix Mv_rotated = M.mult(Mv);
+            vertex[i][0] = Mv_rotated.get(0, 0);
+            vertex[i][1] = Mv_rotated.get(1, 0);
+            vertex[i][2] = Mv_rotated.get(2, 0);
+        }
+        for (int i = 0; i < normals.length; i++) {
+            Vector V = new Vector(new double[]{normals[i][0], normals[i][1], normals[i][2]});
+            Matrix Mv = V.toMatrix();
+            Matrix Mv_rotated = M.mult(Mv);
+            normals[i][0] = Mv_rotated.get(0, 0);
+            normals[i][1] = Mv_rotated.get(0, 0);
+            normals[i][2] = Mv_rotated.get(0, 0);
+        }
+    }
+
+
+    static void readOBJ() throws FileNotFoundException {
+        BuildArrays();
+    }
+
+
+    static BufferedImage renderOBJ(Graphics2D g, BufferedImage img) {
+        Vector light = new Vector(new double[]{10, 10, 10});
+        Vector sight = new Vector(new double[]{0, 0, -1});
+        double[][] zBuffer = new double[w][h];
+        for (int i = 0; i < triangles.length; i++) {
+//            Vector A = new Vector(new double[]{vertex[triangles[i][0][0] - 1][0], vertex[triangles[i][0][0] - 1][1], vertex[triangles[i][0][0] - 1][2]});
+//            Vector B = new Vector(new double[]{vertex[triangles[i][1][0] - 1][0], vertex[triangles[i][1][0] - 1][1], vertex[triangles[i][1][0] - 1][2]});
+//            Vector C = new Vector(new double[]{vertex[triangles[i][2][0] - 1][0], vertex[triangles[i][2][0] - 1][1], vertex[triangles[i][2][0] - 1][2]});
+//            Vector AB = B.sum(A.scMult(-1));
+//            Vector AC = C.sum(A.scMult(-1));
+//            Vector normal = AB.CrossProd(AC).normalize();
+            Render.renderOBJTriangle(img,
+                    vertex[triangles[i][0][0] - 1][0], vertex[triangles[i][0][0] - 1][1], vertex[triangles[i][0][0] - 1][2],
+                    vertex[triangles[i][1][0] - 1][0], vertex[triangles[i][1][0] - 1][1], vertex[triangles[i][1][0] - 1][2],
+                    vertex[triangles[i][2][0] - 1][0], vertex[triangles[i][2][0] - 1][1], vertex[triangles[i][2][0] - 1][2],
+                    light.scProd(new Vector(new double[]{normals[triangles[i][0][2] - 1][0], normals[triangles[i][0][2] - 1][1], normals[triangles[i][0][2] - 1][2]})),
+                    light.scProd(new Vector(new double[]{normals[triangles[i][1][2] - 1][0], normals[triangles[i][1][2] - 1][1], normals[triangles[i][1][2] - 1][2]})),
+                    light.scProd(new Vector(new double[]{normals[triangles[i][2][2] - 1][0], normals[triangles[i][2][2] - 1][1], normals[triangles[i][2][2] - 1][2]})),
+                    sight, X, Y, zBuffer);
+        }
+        return img;
+    }
 
 
     //магический код позволяющий всему работать, лучше не трогать
-    public static void main(String[] args) throws InterruptedException, IOException {
+    public static void main(String[] args) throws InterruptedException, FileNotFoundException {
         Main jf = new Main();
         jf.setSize(w, h);//размер экрана
         jf.setUndecorated(false);//показать заголовок окна
-        jf.setTitle("Влад бумага");
+        jf.setTitle("");
         jf.setVisible(true);
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jf.createBufferStrategy(2);
         //в бесконечном цикле рисуем новый кадр
         while (true) {
-            long frameLength = 1000 / 1; //пытаемся работать из рассчета  60 кадров в секунду
+            long frameLength = 1000 / 60; //пытаемся работать из рассчета  60 кадров в секунду
             long start = System.currentTimeMillis();
             BufferStrategy bs = jf.getBufferStrategy();
             Graphics2D g = (Graphics2D) bs.getDrawGraphics();
@@ -258,6 +215,7 @@ public class Main extends JFrame {
 
     //Вызывается когда клавиша отпущена пользователем, обработка события аналогична keyPressed
     public void keyReleased(KeyEvent e) {
+
 
     }
 }
